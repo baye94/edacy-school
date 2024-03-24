@@ -40,8 +40,8 @@ ngAfterViewInit() {
 ngOnInit() {
   this.getClassrooms();
 }
-preparedEdite( studentEdit: Student){
-  localStorage.setItem('my-student', JSON.stringify(studentEdit));
+preparedEdite( classroomEdit: Student){
+  localStorage.setItem('my-classroom', JSON.stringify(classroomEdit));
   this.openEditDialog('0ms','0ms');
 }
 openEditDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
@@ -59,30 +59,30 @@ openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void 
   });
 }
 getClassrooms() {
-  this.studentService.getStudents().subscribe(
-    students => {
-      this.students = students.reverse();
-      this.dataSource = new MatTableDataSource<Student>(students.reverse());
+  this.classroomService.getClassrooms().subscribe(
+    classroom => {
+      this.classrooms = classroom.reverse();
+      this.dataSource = new MatTableDataSource<Classroom>(classroom.reverse());
     },
     error => {
       console.error('Erreur lors du chargement des étudiants :', error);
     }
   );
 }
-editStudent(student: Student) {
-  this.studentService.editStudent(student).subscribe(
-     editedStudent => {
-       const studentIndex = this.students.findIndex(s => s.id === editedStudent.id);
-       this.students[studentIndex] = editedStudent;
+editClassroom(classroom: Classroom) {
+  this.classroomService.editClassroom(classroom).subscribe(
+     editedClassroom => {
+       const studentIndex = this.classrooms.findIndex(s => s.id === editedClassroom.id);
+       this.classrooms[studentIndex] = editedClassroom;
      },
      error => {
      }
    );
  }
- deleteStudent(studentId: number) {
-  this.studentService.deleteStudent(studentId).subscribe(
+ deleteClassroom(classroomId: number) {
+  this.classroomService.deleteClassroom(classroomId).subscribe(
      response => {
-       this.students = this.students.filter(s => s.id !== studentId);
+       this.classrooms = this.classrooms.filter(s => s.id !== classroomId);
      },
      error => {
        // Gérer l'erreur de suppression
