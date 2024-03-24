@@ -15,6 +15,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDividerModule} from '@angular/material/divider';
 import { Classroom } from '../../model/classroom.model';
 import { ClassroomService } from "../../sercices/classroom.service";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-classroom',
@@ -25,7 +26,8 @@ import { ClassroomService } from "../../sercices/classroom.service";
 })
 export class CreateClassroomComponent {
   @ViewChild('modal') modal: any;
-  constructor(private classroomService: ClassroomService, private dialogData: MatDialog,private snackBar: MatSnackBar,
+  constructor(private classroomService: ClassroomService, private dialogData: MatDialog,
+             private snackBar: MatSnackBar,
   ) {}
   ngOnInit(): void {
    this.getClassroom();
@@ -43,9 +45,10 @@ export class CreateClassroomComponent {
     });
         this.newClassroom = {};
         this.dialogData.closeAll();
+        this.showAlert()
       },
       error: (error) => {
-        console.error('Error while adding student:', error);
+        this.alertError()
       }
     });
   }
@@ -63,4 +66,19 @@ export class CreateClassroomComponent {
       }
     );
   }
+  showAlert() {
+    Swal.fire({
+      title: "Classroom add with success!",
+      text: "You clicked the button!",
+      icon: "success"
+    });
+  }
+  alertError(){
+    Swal.fire({
+      title: 'Oops!',
+      text: 'Something went wrong while creating the classroom.',
+      icon: 'error'
+    });
+  }
+
 }

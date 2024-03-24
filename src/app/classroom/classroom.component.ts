@@ -15,6 +15,7 @@ import { ClassroomService } from "../sercices/classroom.service";
 import { EditStudentComponent } from '../student/edit-student/edit-student.component';
 import { CreateClassroomComponent } from './create-classroom/create-classroom.component';
 import { EditClassroomComponent } from './edit-classroom/edit-classroom.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-classroom',
@@ -38,7 +39,10 @@ ngAfterViewInit() {
   this.dataSource.paginator = this.paginator;
 }
 ngOnInit() {
-  this.getClassrooms();
+this.getClassrooms();
+  this.classroomService.RequiredRefresh.subscribe(() => {
+    this.getClassrooms();
+      });
 }
 preparedEdite( classroomEdit: Student){
   localStorage.setItem('my-classroom', JSON.stringify(classroomEdit));
@@ -51,6 +55,7 @@ openEditDialog(enterAnimationDuration: string, exitAnimationDuration: string): v
     exitAnimationDuration,
   });
 }
+
 openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
   this.dialog.open(CreateClassroomComponent, {
     width: '800px',
@@ -80,13 +85,38 @@ editClassroom(classroom: Classroom) {
    );
  }
  deleteClassroom(classroomId: number) {
-  this.classroomService.deleteClassroom(classroomId).subscribe(
-     response => {
-       this.classrooms = this.classrooms.filter(s => s.id !== classroomId);
-     },
-     error => {
-       // Gérer l'erreur de suppression
-     }
-   );
- }
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You won\'t be able to revert this!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.classroomService.deleteClassroom(classroomId).subscribe({
+        next: () => {
+          this.classrooms = this.classrooms.filter(s => s.id !== classroomId);
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'Classroom has been deleted.',
+            icon: 'success'
+          });
+        },
+        error: (error) => {
+         this.alertError()
+        }
+      });
+    }
+  });
+}
+alertError(){
+  Swal.fire({
+    title: 'Oops!',
+    text: 'Something went wrong while deleting the classroom.',
+    icon: 'error'
+  });
+}
+
 }

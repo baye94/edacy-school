@@ -13,6 +13,7 @@ import { StudentService } from '../sercices/student.service';
 import { EditStudentComponent } from './edit-student/edit-student.component';
 import { Classroom } from '../model/classroom.model';
 import { ClassroomService } from "../sercices/classroom.service";
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -34,6 +35,9 @@ dataSource : any;
   }
   ngOnInit() {
     this.getStudents();
+    this.studentService.RequiredRefresh.subscribe(() => {
+      this.getStudents();
+        });
   }
 
   openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
@@ -86,19 +90,51 @@ dataSource : any;
       }
     );
   }
+
   deleteStudent(studentId: number) {
-   this.studentService.deleteStudent(studentId).subscribe(
-      response => {
-        this.students = this.students.filter(s => s.id !== studentId);
-      },
-      error => {
-        // Gérer l'erreur de suppression
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.studentService.deleteStudent(studentId).subscribe({
+          next: () => {
+            this.students = this.students.filter(s => s.id !== studentId);
+            this.alertSuccess()
+          },
+          error: (error) => {
+           this.alertError()
+          }
+        });
       }
-    );
+    });
   }
-
-
-
+  alertError(){
+    Swal.fire({
+      title: 'Oops!',
+      text: 'Something went wrong while deleting the classroom.',
+      icon: 'error'
+    });
+  }
+  showAlert() {
+    Swal.fire({
+      title: "Student update with success!",
+      text: "You clicked the button!",
+      icon: "success"
+    });
+  }
+  alertSuccess(){
+    Swal.fire({
+      title: 'Deleted!',
+      text: 'Classroom has been deleted.',
+      icon: 'success'
+    });
+  }
 
 }
 

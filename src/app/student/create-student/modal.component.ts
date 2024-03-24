@@ -18,6 +18,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import { Classroom } from '../../model/classroom.model';
 import { ClassroomService } from "../../sercices/classroom.service";
 import { NgFor } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modal',
@@ -49,25 +50,32 @@ export class ModalComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('onSubmit() called');
     this.studentService.addStudent(this.newStudent).subscribe({
       next: () => {
-        console.log('Student added successfully');
-        console.log(this.studentService.getStudents())
-          this.snackBar.open('Enregistrement effectué avec succès !', 'Fermer', {
-     duration: 2000,
-    });
         this.newStudent = {};
         this.dialogData.closeAll();
+        this.showAlert()
       },
       error: (error) => {
-        console.error('Error while adding student:', error);
+        this.alertError()
       }
     });
   }
   onCancel(): void {
-    this.dialogData.closeAll(); // Fermez tous les modals
-    // Action pour annuler l'ajout de l'étudiant (si nécessaire)
+    this.dialogData.closeAll();
   }
-
+  showAlert() {
+    Swal.fire({
+      title: "Student add with success!",
+      text: "You clicked the button!",
+      icon: "success"
+    });
+  }
+  alertError(){
+    Swal.fire({
+      title: 'Oops!',
+      text: 'Something went wrong while creating the student.',
+      icon: 'error'
+    });
+  }
 }

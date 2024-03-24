@@ -19,6 +19,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import { Classroom } from '../../model/classroom.model';
 import { ClassroomService } from "../../sercices/classroom.service";
 import { NgFor } from '@angular/common';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-edit-classroom',
   standalone: true,
@@ -44,20 +45,29 @@ export class EditClassroomComponent implements OnInit {
   }
   classrooms : Classroom [] = [];
   onSubmit() {
-    console.log('onSubmit() called');
     this.classroomService.editClassroom(this.newClassroom).subscribe({
       next: () => {
-        console.log('Student added successfully');
-        console.log(this.newClassroom);
-          this.snackBar.open('Enregistrement effectué avec succès !', 'Fermer', {
-     duration: 2000,
-    });
         this.newClassroom = {};
         this.dialogData.closeAll();
+        this.showAlert();
       },
-      error: (error) => {
-        console.error('Error while adding student:', error);
+      error: () => {
+        this.alertError()
       }
+    });
+  }
+  showAlert() {
+    Swal.fire({
+      title: "Classroom update with success!",
+      text: "You clicked the button!",
+      icon: "success"
+    });
+  }
+  alertError(){
+    Swal.fire({
+      title: 'Oops!',
+      text: 'Something went wrong while updating the classroom.',
+      icon: 'error'
     });
   }
 }

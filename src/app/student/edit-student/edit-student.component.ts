@@ -16,6 +16,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import {MatDividerModule} from '@angular/material/divider';
 import { Student } from '../../model/student.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit-student',
@@ -42,19 +43,14 @@ export class EditStudentComponent implements OnInit {
 
   newStudent: any = {};
   onSubmit() {
-    console.log('onSubmit() called');
     this.studentService.editStudent(this.newStudent).subscribe({
       next: () => {
-        console.log('Student added successfully');
-        console.log(this.studentService.getStudents())
-          this.snackBar.open('Enregistrement effectué avec succès !', 'Fermer', {
-     duration: 2000,
-    });
         this.newStudent = {};
         this.dialogData.closeAll();
+        this.showAlert();
       },
       error: (error) => {
-        console.error('Error while adding student:', error);
+        this.alertError();
       }
     });
   }
@@ -62,12 +58,25 @@ export class EditStudentComponent implements OnInit {
     try {
       return new Date(date);
     } catch (error) {
-      console.error('Error parsing date string:', error);
       return null; // Or throw an error if appropriate
     }
   }
   onCancel(): void {
     this.dialogData.closeAll(); // Fermez tous les modals
     // Action pour annuler l'ajout de l'étudiant (si nécessaire)
+  }
+  showAlert() {
+    Swal.fire({
+      title: "Student update with success!",
+      text: "You clicked the button!",
+      icon: "success"
+    });
+  }
+  alertError(){
+    Swal.fire({
+      title: 'Oops!',
+      text: 'Something went wrong while updating the student.',
+      icon: 'error'
+    });
   }
 }

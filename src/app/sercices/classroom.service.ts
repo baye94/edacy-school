@@ -1,6 +1,6 @@
 // student.service.ts
 import { Injectable } from '@angular/core';
-import { EMPTY, Observable, of } from 'rxjs';
+import { EMPTY, Observable, Subject, of } from 'rxjs';
 import { Student } from './../model/student.model';
 import { switchMap } from 'rxjs/operators';
 import { initialClassroomsData } from '../data/classroom'
@@ -23,8 +23,10 @@ const year = parseInt(dateString.substring(11, 15)); // Année (ex: 2025)
 export class ClassroomService {
     private classrooms: Classroom[] = initialClassroomsData;
 
-  private apiUrl = '../data/students.json';
-
+   private _refreshrequired = new Subject<void>();
+  get RequiredRefresh() {
+    return this._refreshrequired;
+  }
   constructor() {}
 
   getClassrooms(): Observable<Classroom[]> {
@@ -42,6 +44,7 @@ export class ClassroomService {
       classroomsData.push(classroom);
       subscriber.next(classroom);
       subscriber.complete();
+      this.RequiredRefresh.next();
     });
   }
   editClassroom(classroom: Classroom): Observable<Classroom> {
@@ -55,6 +58,8 @@ export class ClassroomService {
       this.classrooms[existingStudentIndex] = classroom;
       subscriber.next(classroom);
       subscriber.complete();
+      this.RequiredRefresh.next();
+
     });
   }
   getClassroomById(studentId: number): Observable<Classroom | undefined> {
@@ -80,17 +85,11 @@ export class ClassroomService {
         subscriber.error(new Error('Student not found'));
         return;
       }
-
-      const confirmation = window.confirm('Are you sure you want to delete this student?');
-      if (!confirmation) {
-        subscriber.next({ message: 'Deletion canceled' });
-        subscriber.complete();
-        return;
-      }
-
       this.classrooms.splice(studentIndex, 1);
       subscriber.next({ message: 'Student deleted successfully' });
       subscriber.complete();
+      this.RequiredRefresh.next();
+
     });
   }
 
