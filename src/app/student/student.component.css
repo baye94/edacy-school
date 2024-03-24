@@ -1,0 +1,20 @@
+.container {
+  display:grid;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  width: 100%;
+  padding-top: 50px; /* Ajustez la valeur pour déplacer le conteneur vers le bas */
+}
+
+.mat-elevation-z2 {
+  width: 100%;
+}
+.example-button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.icon-right {
+  order: 3; /* Pour placer l'icône à l'extrême droite */
+}

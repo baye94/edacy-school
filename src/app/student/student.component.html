@@ -1,0 +1,67 @@
+<mat-card>
+  <mat-card-content>
+    <mat-card>
+      <mat-card-content>
+        <button mat-mini-fab color="accent" aria-label="Example icon button with a plus one icon" class="icon-right" color="primary" (click)="openDialog('0ms','0ms')">
+          <mat-icon>plus_one</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="mat-elevation-z2">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> No. </th>
+          <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+        <ng-container matColumnDef="firstname">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastname">
+          <th mat-header-cell *matHeaderCellDef> Lastname </th>
+          <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
+        </ng-container>
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef> Phone</th>
+          <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+        </ng-container>
+        <ng-container matColumnDef="birthday">
+          <th mat-header-cell *matHeaderCellDef> Birthday</th>
+          <td mat-cell *matCellDef="let element"> {{element.datenasissance}} </td>
+        </ng-container>
+        <ng-container matColumnDef="tutorfirstname">
+          <th mat-header-cell *matHeaderCellDef> Parent firstname</th>
+          <td mat-cell *matCellDef="let element"> {{element.tutorfirstname}} </td>
+        </ng-container>
+        <ng-container matColumnDef="tutorlastname">
+          <th mat-header-cell *matHeaderCellDef> Parent lastname</th>
+          <td mat-cell *matCellDef="let element"> {{element.tutorlastname}} </td>
+        </ng-container>
+        <ng-container matColumnDef="tutorphone">
+          <th mat-header-cell *matHeaderCellDef> Parent phone</th>
+          <td mat-cell *matCellDef="let element"> {{element.tutorphone}} </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="preparedEdite(element)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteStudent(element.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                     showFirstLastButtons
+                     aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
